@@ -21,6 +21,12 @@ npm i -g @nestjs/cli
 docker-compose up -d
 ```
 
+5. Reconstruir la base de datos con el Seed(semilla), esto poblará la base de datos con 650 registros de pokemones
+
+```
+http://localhost:3000/api/v2/seed
+```
+
 
 ## Stack usado
 * MongoDB
