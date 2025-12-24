@@ -1,6 +1,5 @@
 import { Controller, Get} from '@nestjs/common';
 import { SeedService } from './seed.service';
-import axios from 'axios';
 
 
 @Controller('seed')

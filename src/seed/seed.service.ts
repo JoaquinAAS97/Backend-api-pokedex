@@ -1,25 +1,31 @@
-import { Injectable } from '@nestjs/common';
-import axios, { AxiosInstance } from 'axios';
+import { Inject, Injectable } from '@nestjs/common';
 import { PokeResponse } from './interfaces/poke-response.interfaces';
 import { InjectModel } from '@nestjs/mongoose';
 import { Pokemon } from 'src/pokemon/entities/pokemon.entity';
 import { Model } from 'mongoose';
 import { pokemonInsert } from './interfaces/pokemon-insert.interface';
+import type { HttpAdapter } from 'src/common/interfaces/http-adapter.interface';
+
 
 @Injectable()
 export class SeedService {
 
-  private readonly axios: AxiosInstance = axios;
-
+  
   constructor(
     @InjectModel(Pokemon.name)
-    private readonly pokemonModel: Model<Pokemon>){}
+    private readonly pokemonModel: Model<Pokemon>,
+    @Inject('HttpAdapter') 
+    /* se debe injectar el 'HttpAdapter' como interfaz. Esto se debe realizar cuando no se inyectan token personalizados o 
+    interfaces, es decir, si el provider es directament euna clase, no se debe inyectar nada */
+    private readonly http: HttpAdapter,
+  ){}
+   
 
   async executeSeed(){
     // Eliminar todos los registros para evitar error por inserciones repetidas
     await this.pokemonModel.deleteMany({}); // esto es igual al delete * from pokemon, se ejecuta para evitar errores en insersiones repetidas
 
-    const {data} = await this.axios.get<PokeResponse>('https://pokeapi.co/api/v2/pokemon?limit=650')
+    const data = await this.http.get<PokeResponse>('https://pokeapi.co/api/v2/pokemon?limit=650')
 
     const pokemonToInsert: pokemonInsert[] = [];
 
