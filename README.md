@@ -5,6 +5,7 @@
 # Ejecutar en desarrollo
 
 1. Clonar el repositorio
+
 2. Ejecutar los siguientes comandos
 
 ```
@@ -12,19 +13,38 @@ npm install
 ```
 
 3. Disponer de Nest CLI instalado
+
 ```
 npm i -g @nestjs/cli
 ```
+
 4. Levantar la base de datos, ejecutar el siguiente código en tu terminal
 
 ```
 docker-compose up -d
 ```
 
-5. Reconstruir la base de datos con el Seed(semilla), esto poblará la base de datos con 650 registros de pokemones
+5. Clonar el archivo ```.env.template``` y renombrar la copia a ```.env```
+
+6. Llenar las variables de entorno definidas en el ```.env```
+
+
+7. Ejecutar la aplicación en dev:
+
+__En Windows__
+```
+npm run start:dev
+```
+__En MacOs__
+```
+yarn start:dev
+```
+
+8. econstruir la base de datos con el Seed(semilla), esto poblará la base de datos con 650 registros de pokemones
 
 ```
 http://localhost:3000/api/v2/seed
+
 ```
 
 

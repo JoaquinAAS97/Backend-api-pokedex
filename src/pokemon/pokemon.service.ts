@@ -1,17 +1,31 @@
+// Improts de Nest js
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { InjectModel } from '@nestjs/mongoose';
+
+// Imports DTO
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+
+// imports BD
 import { isValidObjectId, Model } from 'mongoose';
 import { Pokemon } from './entities/pokemon.entity';
-import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class PokemonService {
 
+  private defaultLimit: number;
+
   constructor(
+
     @InjectModel(Pokemon.name)
-    private readonly pokemonModel: Model<Pokemon>
-  ) { }
+    private readonly pokemonModel: Model<Pokemon>,
+    private readonly configService: ConfigService,
+
+  ) {
+    this.defaultLimit = this.configService.getOrThrow<number>('defaultLimit');
+  }
 
   async create(createPokemonDto: CreatePokemonDto) {
     createPokemonDto.name = createPokemonDto.name.toLocaleLowerCase();
@@ -26,9 +40,15 @@ export class PokemonService {
 
   }
 
-  async findAll() {
-    const pokemon = await this.pokemonModel.find().select('-__v').exec()
-    return pokemon;
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = this.defaultLimit, offset = 0 } = paginationDto;
+    return this.pokemonModel.find()
+      .limit(limit) // permite limitar el maximo de datos en query
+      .skip(offset) // permite altar ciertos atributos
+      .sort({  // el sort permite ordenar de forma ascendente o descendente según en este caso su n: de tipo number
+        no: 1
+      })
+      .select('-__V'); // Esto permite filtrar este atributo de la consulta a BD
   }
 
 
@@ -77,8 +97,8 @@ export class PokemonService {
     // const pokemon = await this.findOne(term);
     // await pokemon.deleteOne();
     // el metodo FindByIdAndDelete --> realiza 2 consultas en 1, encuentra y si encuentra elimina.
-    const {deletedCount} = await this.pokemonModel.deleteOne({_id: id});
-    if (deletedCount === 0){
+    const { deletedCount } = await this.pokemonModel.deleteOne({ _id: id });
+    if (deletedCount === 0) {
       throw new NotFoundException(`Pokemon with id: "${id}" not found`);
     }
     return;

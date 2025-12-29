@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AxiosAdapter } from './adapter/axios.adapter';
 import { FetchAdapter } from './adapter/fetch.adapter';
 
 @Module({
