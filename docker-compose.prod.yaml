@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  pokedexapp:
+    depends_on: # se genera una dependencia de otro servicio, ene te caso del servicio de la DB
+      - db
+    build: # paso de construccion de la iamgen
+      context: . # aqui se le indica que el build se base en la estructura del proyecto original
+      dockerfile: Dockerfile # nombre del dockerfile
+    image: pokedex-docker # Nombre de la imagen
+    container_name: pokedexapp # nombre del container
+    restart: always # reiniciar el contenedor si se detiene
+    ports:
+      - "${PORT}:${PORT}"
+    # working_dir: /var/www/pokedex
+    environment:
+      MONGODB: ${MONGODB}
+      PORT: ${PORT}
+      DEFAULT_LIMIT: ${DEFAULT_LIMIT}
+    # volumes:
+    #   - ./:/var/www/pokedex
+
+  db:
+    image: mongo:5
+    container_name: mongo-poke
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGODB_DATABASE: nest-pokemon
+    volumes:
+      - ./mongo:/data/db

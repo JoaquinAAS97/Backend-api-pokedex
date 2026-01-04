@@ -52,6 +52,16 @@ http://localhost:3000/api/v2/seed
 * MongoDB
 * Nest js
 
+
+# Production Build
+1. Crear el archivo ```.env.prod```
+2. Llenar las variables de entorno de prod
+3. Crear la nueva imagen
+```
+docker-compose -f docker-compose.prod.yaml --env-file .env.prod up --build
+
+```
+
 ## URL Para crear nuevo pokemon(POST)
 
 * Ingresar en el body, los siguientes atributos y sus tipos(solo el formato):
